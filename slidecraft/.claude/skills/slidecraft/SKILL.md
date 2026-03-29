@@ -179,7 +179,7 @@ Stop here — do not proceed to generation.
    cd <project-dir> && (sleep infinity | npx slidev) 2>&1
    ```
    Run via Bash with `run_in_background: true`.
-4. **Wait for ready**: use TaskOutput with `block: true, timeout: 15000` to capture initial output showing the URL.
+4. **Wait for ready**: use the Read tool to read the background task's output file and check for the URL.
 5. **Report**: print the local URL (e.g. `http://localhost:3030/`) once the server is ready. The server continues running in the background.
 
 Stop here — do not proceed to generation.
