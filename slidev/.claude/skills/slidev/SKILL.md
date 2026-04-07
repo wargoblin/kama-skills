@@ -1,6 +1,6 @@
 ---
 name: slidev
-description: Use when generating a Slidev presentation from a slide outline. Supports preset styles, unique designs, custom style descriptions, and image placement. Scaffolds a complete Slidev project. Also handles --help, --dev, --export, --edit, --picture, --create-preset, --learn, and --figma subcommands.
+description: Generate Slidev presentations from slide outlines with preset styles, unique designs, custom style descriptions, and image placement.
 argument-hint: "[--help | --dev [dir] | --export <format> [dir] | --edit [dir] <comment> | --picture [auto|paths...] [dir] | --create-preset <name> | --learn=N | --deep_learn=N | --figma=<URL> | --no-preset | --preset <name> | style: <desc>] <outline or file path>"
 ---
 
