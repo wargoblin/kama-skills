@@ -575,24 +575,51 @@ Do NOT skip the re-review after fixes.
 
 **ALL MCP calls are SEQUENTIAL** — one at a time, wait for response, then next. No parallel use_figma/get_screenshot.
 
+### ⛔ ALL 4 LEVELS ARE MANDATORY — NO EXCEPTIONS
+
+**CRITICAL RULE: Every QA level (1, 2, 3, 4) MUST be executed in strict sequential order. NONE may be skipped, shortened, or omitted under ANY circumstances.** This applies regardless of:
+- How many slides the presentation has (1 slide or 50 slides — all 4 levels run)
+- How "clean" earlier levels report the deck to be (even 22/22 score does NOT skip Level 2-4)
+- How long the process takes (time is NOT a reason to skip levels)
+- How many presentations are generated in one session (each gets its own full 4-level QA)
+- Context window pressure (if context is running low, summarize earlier results but do NOT skip remaining levels)
+
+**If ANY level is skipped, the presentation is considered INCOMPLETE and MUST NOT be delivered to the user.**
+
+**Verification gate between levels:** Before starting Level N+1, print:
+```
+✅ Level N COMPLETE — proceeding to Level N+1
+```
+If this line is missing between any two levels → a level was skipped → STOP and go back.
+
 ```
 Generation (clone → fill)
+      ↓
+✅ Generation COMPLETE — proceeding to Level 1
       ↓
 Level 1: Per-slide subagents (batches of 4, foreground, sequential MCP)
       ↓ Global consistency pass (main thread, one use_figma call)
       ↓
-Level 2: Designer Critic cycle:
+✅ Level 1 COMPLETE — proceeding to Level 2
+      ↓
+Level 2: Designer Critic cycle (MANDATORY):
     Designer subagent → Fixer subagent → Designer subagent (re-review)
     → until approved or no progress
       ↓
-Level 3: Client Simulator cycle:
+✅ Level 2 COMPLETE — proceeding to Level 3
+      ↓
+Level 3: Client Simulator cycle (MANDATORY):
     Client subagent → Fixer subagent → Client subagent (re-review)
     → until approved or no progress
       ↓
-Level 4: Senior Reviewer (strictest, reads design-lessons.md)
+✅ Level 3 COMPLETE — proceeding to Level 4
+      ↓
+Level 4: Senior Reviewer (MANDATORY, strictest, reads design-lessons.md):
     Senior subagent → Fixer subagent → Senior subagent (re-review)
     → until APPROVED or no progress
     → update design-lessons.md with new learnings
+      ↓
+✅ Level 4 COMPLETE — ALL QA LEVELS PASSED
       ↓
 DONE → Final Report
 ```
@@ -658,13 +685,17 @@ Senior Reviewer → Fixer subagent → Senior Reviewer (re-review)
 
 ### Final Report
 
+**MUST include all 4 levels. If any level line is missing → that level was skipped → presentation is INCOMPLETE.**
+
 ```
-━━━ QA Complete ━━━
-Level 1: X/10 (structural + visual checklist)
-Level 2: Designer — [approved / X fixes applied]
-Level 3: Client — [approved / X changes applied]
+━━━ QA Complete — ALL 4 LEVELS PASSED ━━━
+✅ Level 1: Structural + Visual — [X]/22 avg score, [Y] fixes applied
+✅ Level 2: Designer Critic — [approved after N iterations / X fixes applied]
+✅ Level 3: Client Simulator — [approved after N iterations / X changes applied]
+✅ Level 4: Senior Reviewer — [approved after N iterations / X fixes applied]
 Clean slides: X/N
 Generated page: <pageId>
+Design lessons updated: [YES/NO]
 ```
 
 ---

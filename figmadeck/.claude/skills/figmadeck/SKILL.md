@@ -101,6 +101,21 @@ When outline content is longer than the template placeholder text:
 3. **Reduce fontSize** (minimum = current × 0.85)
 4. Last resort: move overflow detail to a note
 
+## Mandatory QA — All 4 Levels
+
+**CRITICAL — NON-NEGOTIABLE:** After generation, ALL 4 QA levels MUST execute in strict order. **NONE may be skipped.**
+
+| Level | What | Can be skipped? |
+|-------|------|-----------------|
+| Level 1 | Per-slide structural + visual checklist | **NO** |
+| Level 2 | Designer Critic cycle | **NO** |
+| Level 3 | Client Simulator cycle | **NO** |
+| Level 4 | Senior Reviewer cycle | **NO** |
+
+**This applies regardless of:** deck size, how clean L1 reports, time spent, context pressure, or number of presentations in a session. Each presentation gets its own full 4-level QA. If any level is skipped, the presentation is **INCOMPLETE** and must not be delivered.
+
+Print `✅ Level N COMPLETE — proceeding to Level N+1` between each level as a verification gate.
+
 ## Autonomous Execution
 
 **CRITICAL:** Execute all steps autonomously without stopping for confirmation. If blocked, attempt to resolve (2-3 attempts). Only stop if truly unresolvable.
