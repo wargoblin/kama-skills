@@ -159,6 +159,15 @@ Evaluate per frame after collecting text roles:
 
 Parse the outline to determine count and content type for each slide, then reconcile against the template `slideMap`.
 
+### Mandatory Title Slide (FIRST)
+
+**Before running the matching loop**, ensure the first outline slide is a cover/title:
+
+1. If outline slide 0 has `contentType: "intro"` → OK, proceed
+2. If outline slide 0 is NOT `contentType: "intro"` → **prepend a synthetic cover slide** using the presentation topic as title and the first slide's subtitle/description as subtitle
+3. Find the template slide with `contentType: "intro"` (first frame, largest title fontSize ≥ 48). If none → use the first template frame
+4. The cover slide is ALWAYS slide 0 in the final order — it is never skipped, never removed, never matched to a non-intro template
+
 ### Matching Algorithm
 
 ```
@@ -287,10 +296,18 @@ for (const textNode of frame.findAll(n => n.type === "TEXT")) {
   const role = detectRole(textNode, frame, frame.findAll(n => n.type === "TEXT"));
   // Valid fill roles: title, subtitle, description, body, label
   // subtitle maps to outlineSlide.subtitle (from role detection priority 3.5)
-  const newText = role === "subtitle"
+  let newText = role === "subtitle"
     ? (outlineSlide.subtitle || outlineSlide.content?.subtitle)
     : outlineSlide.content[role];
-  if (!newText) continue;
+  // ZERO PLACEHOLDER RULE: never leave template text unchanged
+  if (!newText) {
+    // Fallback: use slide title for unknown roles, section name for footers, empty for labels
+    if (role === "footer") newText = outlineSlide.sectionName || outlineSlide.title;
+    else if (role === "label") newText = ""; // clear decorative labels
+    else newText = outlineSlide.title; // fallback to slide title
+    // If still empty, clear the node to avoid template placeholder
+    if (!newText) { newText = ""; }
+  }
 
   // Component instance check — BEFORE calling applyText
   const parentInstance = findParentInstance(textNode);
@@ -402,6 +419,56 @@ for (const d of distances) {
 3. **Reduce fontSize** — minimum = original × 0.85
 4. **Move the lower element down** — only if there is free space below it that doesn't violate the footer zone or other element boundaries
 5. **Accept reduced gap** — if gap is still ≥ 16px after strategies 1-3, accept it even if less than the original. Log the reduction.
+
+### Post-Fill: Text-vs-Text Overlap Check (MANDATORY)
+
+After filling ALL text on a slide, check every pair of visible text nodes for overlap. This catches cases where two text nodes within the SAME container both grew after Russian text replacement.
+
+```js
+// Run AFTER text fill, BEFORE returning
+const allTexts = frame.findAll(n => n.type === "TEXT" && n.visible);
+const textOverlaps = [];
+
+for (let i = 0; i < allTexts.length; i++) {
+  for (let j = i + 1; j < allTexts.length; j++) {
+    const a = allTexts[i], b = allTexts[j];
+    const ax = a.absoluteTransform[0][2], ay = a.absoluteTransform[1][2];
+    const bx = b.absoluteTransform[0][2], by = b.absoluteTransform[1][2];
+
+    // AABB overlap test
+    if (ax < bx + b.width && ax + a.width > bx &&
+        ay < by + b.height && ay + a.height > by) {
+      textOverlaps.push({
+        nodeA: a.id, textA: a.characters.substring(0, 20),
+        nodeB: b.id, textB: b.characters.substring(0, 20),
+      });
+    }
+    // Minimum gap check (8px between text nodes)
+    else {
+      const dx = Math.max(0, Math.max(bx - (ax + a.width), ax - (bx + b.width)));
+      const dy = Math.max(0, Math.max(by - (ay + a.height), ay - (by + b.height)));
+      const gap = Math.min(dx || Infinity, dy || Infinity);
+      if (gap < 8 && gap < Infinity) {
+        textOverlaps.push({
+          nodeA: a.id, textA: a.characters.substring(0, 20),
+          nodeB: b.id, textB: b.characters.substring(0, 20),
+          gap: Math.round(gap), type: "proximity"
+        });
+      }
+    }
+  }
+}
+
+// Fix overlaps: shorten the LONGER text node first
+for (const ov of textOverlaps) {
+  // Strategy 1: expand width of the upper/left node
+  // Strategy 2: shorten the node with more characters
+  // Strategy 3: reduce fontSize of the overlapping node (min × 0.85)
+  // Apply same fix priority as gap violations above
+}
+```
+
+**This check is NOT optional.** Text-on-text overlap is the most common visual defect in Russian presentations because Russian text is 20-40% longer than English.
 
 ### Helper Functions
 

@@ -79,7 +79,7 @@ Each slide is yours alone — no conflicts with other agents.
 
 ```
 STEP 1: Structural check (use_figma)
-STEP 2: Screenshot + visual checklist (MUST print all 19 YES/NO answers)
+STEP 2: Screenshot + visual checklist (MUST print all 22 YES/NO answers)
 STEP 3: Fix issues (if any)
 STEP 4: Re-check until clean (max 3 iterations)
 STEP 5: Content-template fit (Phase E)
@@ -149,9 +149,9 @@ if (sim.length >= 3) {
 return { contentCoverage: Math.round(contentCoverage*100)/100, boundaryBreaches, wordBreaks, oversizedOverflows, innerPaddingFails, issueCount: issues.length, issues: issues.slice(0,10) };
 ```
 
-### Call 2: Overlap + proximity + placeholders
+### Call 2: Text-vs-text overlap + text-vs-elements overlap + placeholders
 
-Only TEXT nodes vs top-level sections (not all visible — reduces O(n²) dramatically).
+**Two overlap scopes:** (A) text vs top-level sections, and (B) text vs ALL other text nodes on the same slide — including siblings within the same container.
 
 ```js
 figma.skipInvisibleInstanceChildren = true; // CRITICAL
@@ -161,25 +161,21 @@ const issues = [];
 let overlapCount=0, proximityViolations=0, unchangedPlaceholders=0;
 
 const textNodes = frame.findAll(n => n.type === "TEXT" && n.visible);
-// Only check against TOP-LEVEL children of frame (not all descendants)
 const topChildren = frame.children.filter(n => n.visible);
 
+// --- SCOPE A: text vs top-level sections (cross-section overlap) ---
 for (const t of textNodes) {
   const tx=t.absoluteTransform[0][2], ty=t.absoluteTransform[1][2];
-  // Find which top-level section this text belongs to
   let tTop = t; while(tTop.parent && tTop.parent.id !== frame.id) tTop = tTop.parent;
 
   for (const section of topChildren) {
-    if (section.id === tTop.id) continue; // same section — skip
+    if (section.id === tTop.id) continue;
     const bx=section.absoluteTransform[0][2], by=section.absoluteTransform[1][2];
 
-    // Overlap
     if (tx < bx+section.width && tx+t.width > bx && ty < by+section.height && ty+t.height > by) {
       overlapCount++;
       issues.push({type:"CRITICAL",desc:`Overlap: "${t.characters.substring(0,15)}" ↔ ${section.type} "${section.name}"`});
-    }
-    // Proximity (only if no overlap)
-    else {
+    } else {
       const dx = Math.max(0, Math.max(bx-(tx+t.width), tx-(bx+section.width)));
       const dy = Math.max(0, Math.max(by-(ty+t.height), ty-(by+section.height)));
       const dist = Math.sqrt(dx*dx + dy*dy);
@@ -191,16 +187,67 @@ for (const t of textNodes) {
   }
 }
 
-// Placeholders (compare with original)
+// --- SCOPE B: text vs text (ALL pairs, including same container) ---
+// This catches the #1 defect: two text nodes in the same card/container
+// that both grew after Russian text replacement and now overlap each other
+for (let i = 0; i < textNodes.length; i++) {
+  for (let j = i + 1; j < textNodes.length; j++) {
+    const a = textNodes[i], b = textNodes[j];
+    const ax=a.absoluteTransform[0][2], ay=a.absoluteTransform[1][2];
+    const bx=b.absoluteTransform[0][2], by=b.absoluteTransform[1][2];
+
+    if (ax < bx+b.width && ax+a.width > bx && ay < by+b.height && ay+a.height > by) {
+      overlapCount++;
+      issues.push({type:"CRITICAL",desc:`Text overlap: "${a.characters.substring(0,15)}" ↔ "${b.characters.substring(0,15)}"`});
+    } else {
+      const dx = Math.max(0, Math.max(bx-(ax+a.width), ax-(bx+b.width)));
+      const dy = Math.max(0, Math.max(by-(ay+a.height), ay-(by+b.height)));
+      const gap = Math.min(
+        dx > 0 ? dx : Infinity,
+        dy > 0 ? dy : Infinity
+      );
+      if (gap > 0 && gap < 8 && gap < Infinity) {
+        proximityViolations++;
+        issues.push({type:"FAIL",desc:`Text proximity: "${a.characters.substring(0,15)}" ↔ "${b.characters.substring(0,15)}" ${Math.round(gap)}px`});
+      }
+    }
+  }
+}
+
+// --- Placeholders (compare with original template) ---
 await figma.setCurrentPageAsync(templatePage);
 const origFrame = figma.getNodeById(origSlideId);
 if (origFrame) {
-  const origChars = origFrame.findAll(n => n.type==="TEXT").map(n => n.characters);
+  const origTexts = origFrame.findAll(n => n.type==="TEXT");
+  const origCharsSet = new Set(origTexts.map(n => n.characters));
+  // Also collect original text by node position (for nodes renamed after fill)
+  const origByPos = {};
+  for (const ot of origTexts) {
+    const key = `${Math.round(ot.absoluteTransform[0][2])},${Math.round(ot.absoluteTransform[1][2])}`;
+    origByPos[key] = ot.characters;
+  }
+
   await figma.setCurrentPageAsync(generatedPage);
   for (const t of textNodes) {
-    if (typeof t.fontSize==='number' && t.fontSize > 14 && origChars.includes(t.characters) && t.characters.length > 3) {
+    const fs = typeof t.fontSize==='number' ? t.fontSize : 16;
+    // Check 1: exact match with any original template text (fontSize > 10, length > 2)
+    if (fs > 10 && t.characters.length > 2 && origCharsSet.has(t.characters)) {
       unchangedPlaceholders++;
-      issues.push({type:"CRITICAL",desc:`Placeholder: "${t.characters.substring(0,25)}"`});
+      issues.push({type:"CRITICAL",desc:`Placeholder unchanged: "${t.characters.substring(0,30)}"`});
+    }
+    // Check 2: position-based match (same coords, same text = was never filled)
+    const posKey = `${Math.round(t.absoluteTransform[0][2])},${Math.round(t.absoluteTransform[1][2])}`;
+    if (origByPos[posKey] && origByPos[posKey] === t.characters && fs > 10 && t.characters.length > 2) {
+      if (!origCharsSet.has(t.characters)) { // avoid double-counting
+        unchangedPlaceholders++;
+        issues.push({type:"CRITICAL",desc:`Placeholder (by position): "${t.characters.substring(0,30)}"`});
+      }
+    }
+    // Check 3: language mismatch — English text in a non-English presentation
+    // If outline is in Russian but text node contains only ASCII letters → likely placeholder
+    if (fs > 14 && t.characters.length > 5 && /^[A-Za-z\s\d\-\/.,]+$/.test(t.characters)) {
+      unchangedPlaceholders++;
+      issues.push({type:"CRITICAL",desc:`Possible English placeholder in non-English deck: "${t.characters.substring(0,30)}"`});
     }
   }
 }
@@ -230,7 +277,9 @@ Go through this checklist. Answer YES/NO for each. ANY "NO" = issue to fix in ST
 ### Content Integrity
 - [ ] Is ALL text content from the outline? Nothing invented or added beyond what outline provides?
 - [ ] Are there NO unchanged placeholder texts from the template? (English placeholders in Russian presentation = problem)
+- [ ] Are there NO text nodes still containing original template text? (check EVERY text node with fontSize > 10)
 - [ ] Are there NO artifacts from previous fixes? (stray arrows, duplicate shapes, extra elements that weren't in template)
+- [ ] (Slide 1 only) Is this a proper title/cover slide with the presentation topic clearly visible?
 
 ### Layout & Spacing
 - [ ] Is there at least 16px gap between any two UNRELATED elements? (text not pressed against a card, icon, or shape it doesn't belong to)
@@ -254,36 +303,39 @@ Go through this checklist. Answer YES/NO for each. ANY "NO" = issue to fix in ST
 ```
 Slide [N] Visual Checklist:
 Text Fit:
-  1. All text inside containers?          [YES/NO]
-  2. Every word complete, no mid-breaks?  [YES/NO]
-  3. Footer/breadcrumb on one line?       [YES/NO]
-  4. No widow (lonely last word)?         [YES/NO]
-  5. Text padding from container edges?   [YES/NO]
+  1. All text inside containers?              [YES/NO]
+  2. Every word complete, no mid-breaks?      [YES/NO]
+  3. Footer/breadcrumb on one line?           [YES/NO]
+  4. No widow (lonely last word)?             [YES/NO]
+  5. Text padding from container edges?       [YES/NO]
 Content:
-  6. All text from outline only?          [YES/NO]
-  7. No unchanged placeholders?           [YES/NO]
-  8. No artifacts from previous fixes?    [YES/NO]
+  6. All text from outline only?              [YES/NO]
+  7. No unchanged placeholders?               [YES/NO]
+  8. No template text remaining (fontSize>10)?[YES/NO]
+  9. No artifacts from previous fixes?        [YES/NO]
+  10. (Slide 1) Proper title/cover slide?     [YES/NO/N/A]
 Layout:
-  9. 16px+ gap between unrelated items?   [YES/NO]
-  10. No text overlap with decorations?   [YES/NO]
-  11. Slide not overly empty?             [YES/NO]
-  12. Margins consistent?                 [YES/NO]
+  11. 16px+ gap between unrelated items?      [YES/NO]
+  12. No text overlap with decorations?       [YES/NO]
+  13. No text-on-text overlap?                [YES/NO]
+  14. Slide not overly empty?                 [YES/NO]
+  15. Margins consistent?                     [YES/NO]
 Typography:
-  13. Heading clearly dominant (3:1)?     [YES/NO]
-  14. Max 3 font sizes?                   [YES/NO]
-  15. Body text left-aligned?             [YES/NO]
-  16. Main point clear in 3 seconds?      [YES/NO]
+  16. Heading clearly dominant (3:1)?         [YES/NO]
+  17. Max 3 font sizes?                       [YES/NO]
+  18. Body text left-aligned?                 [YES/NO]
+  19. Main point clear in 3 seconds?          [YES/NO]
 Template:
-  17. Same style as original template?    [YES/NO]
-  18. Colors/fonts preserved?             [YES/NO]
-  19. Visual elements match content?      [YES/NO]
-Score: [X]/19
+  20. Same style as original template?        [YES/NO]
+  21. Colors/fonts preserved?                 [YES/NO]
+  22. Visual elements match content?          [YES/NO]
+Score: [X]/22
 ```
 
 **If any answer is NO → that item becomes a fix target in STEP 3.**
 **If the checklist is not printed → STEP 2 was NOT executed → slide is NOT checked.**
 
-Scoring: 19/19 = CLEAN. 16-18 = minor fixes. <16 = major fixes or retemplate.
+Scoring: 22/22 = CLEAN. 19-21 = minor fixes. <19 = major fixes or retemplate.
 
 ---
 

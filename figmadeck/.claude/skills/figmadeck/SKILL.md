@@ -65,9 +65,33 @@ Extract `fileKey` from Figma URL:
 - `figma.com/design/:fileKey/branch/:branchKey/:fileName` → use branchKey
 - If URL is not `figma.com/design/...` → error
 
-## Hard Constraint
+## Hard Constraints
 
 **The generated presentation MUST have exactly the same number of slides, in exactly the same order, with exactly the same content as the outline.** Never add, remove, merge, or reorder slides beyond what the outline specifies.
+
+### Mandatory Title Slide
+
+**CRITICAL:** The first slide MUST always be a cover/title slide (`contentType: "intro"`). Rules:
+1. If the outline's first slide is explicitly a title/cover → use it as-is
+2. If the outline does NOT start with a title slide → **prepend one automatically**: use the presentation topic as the title and the first outline slide's subtitle or description as the subtitle
+3. The title slide MUST be matched to an `intro`-type template (largest title fontSize, cover layout). If no `intro` template exists → use the first template frame and adapt it as a cover
+4. A title slide with only 1 short word in an oversized slot looks empty — use 2+ words or a title+subtitle pair (see `design-lessons.md`)
+
+### Zero Placeholder Text
+
+**CRITICAL:** After generation, **NO template placeholder text may remain** in ANY text node. Rules:
+1. Every visible TEXT node with `fontSize > 10` MUST be filled with content from the outline or contextually appropriate metadata (page number, project name, section name)
+2. If a text node has no matching role in the outline → fill with contextual content (section name, slide title, empty string for decorative labels) — but NEVER leave the original English/template text
+3. During Step 5 (Fill), if `newText` is undefined for a role → do NOT `continue` silently. Instead, set the node to the slide's title, section name, or `""` (empty) as a last resort
+4. QA MUST flag any text node where `characters` matches the original template text AND `fontSize > 10`
+
+### No Text Overlap
+
+**CRITICAL:** Text elements MUST NOT overlap each other or any other visible elements. Rules:
+1. After filling each slide, run a pairwise overlap check between ALL visible text nodes on that slide (not just text vs top-level sections)
+2. If two text nodes overlap → apply fix priority: expand container width → shorten text → reduce fontSize → move element
+3. Russian text is 20-40% longer than English — every text replacement MUST include an overlap check against sibling text nodes within the same parent container
+4. The minimum gap between any two text elements is 8px. Between unrelated elements: 16px
 
 ### Content Adaptation
 

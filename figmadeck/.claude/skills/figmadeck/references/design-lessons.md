@@ -86,3 +86,13 @@ These are problems that QA consistently misses despite having rules for them:
 **Breadcrumb "Презентация, которая убеждает" needs 460px+ width.** Default container is 290px — guaranteed to wrap. Apply to ALL slides in Global Consistency Pass, not just the one where it was noticed.
 
 **Statement slides have inverted hierarchy by design.** Templates like 1:102 and 1:185 put body at 65px and heading at 45px. This is intentional — body IS the hero. Don't "fix" this unless retemplating.
+
+## Lessons From 2026-04-08 Review
+
+**Missing title slide = broken presentation.** Every presentation MUST start with a cover/title slide. If the outline doesn't have one explicitly, the generator must prepend it using the presentation topic. A presentation that starts with a content slide looks like a broken file.
+
+**Text-on-text overlap inside containers.** The overlap check only compared text vs top-level sections, missing cases where two text nodes WITHIN the same card/container both grew after Russian text replacement. Example: title (grew from 1 line to 2) now overlaps the description below it inside the same card. Fix: pairwise overlap check between ALL text nodes, not just cross-section.
+
+**Template placeholder text left unchanged.** When a text node's role wasn't recognized (no matching `newText`), the fill loop did `continue` — leaving the original English template text. "Reviews / Mobile Strategy" in a Russian presentation = obvious defect. Fix: every text node MUST be filled; if no role match, use slide title or empty string — never leave template text.
+
+**English-only text in non-English deck = placeholder.** A text node containing only ASCII characters (length > 5, fontSize > 14) in a Russian presentation is almost certainly an unfilled placeholder. QA now flags this automatically.
