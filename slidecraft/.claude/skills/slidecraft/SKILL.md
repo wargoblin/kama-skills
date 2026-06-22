@@ -1,10 +1,10 @@
 ---
 name: slidecraft
-description: Use when generating a two-layer presentation from a slide outline. Generates AI background images (text-free) via configurable APIs (Polza.ai default), then assembles a Slidev project with HTML/CSS text overlay. Supports preset styles, custom style descriptions, reference-based consistency, dual-layer QA scoring, and all management subcommands.
+description: "/slidecraft — Use when generating a two-layer presentation from a slide outline. Generates AI background images (text-free) via configurable APIs (Polza.ai default), then assembles a Slidev project with HTML/CSS text overlay. Supports preset styles, custom style descriptions, reference-based consistency, dual-layer QA scoring, and all management subcommands."
 argument-hint: "[--help | --edit [dir] <comment> | --polish=N [dir] | --compare <dir1> <dir2> | --notes [dir] | --learn=N | --create-preset <name> | --export <format> [dir] | --dev [dir] | --responsive [dir] | --picture [auto|paths...] [dir] | --preset <name> | --provider <name> | --model <id> | --no-ref | style: <desc>] <outline or file path>"
 ---
 
-# SlideCraft — Two-Layer Presentation Generator
+# /slidecraft
 
 You generate complete two-layer presentations from slide outlines. Every generation produces:
 1. **AI-generated PNG backgrounds** — visual layer with no text, empty zones reserved for text

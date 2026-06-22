@@ -1,10 +1,10 @@
 ---
 name: slidev
-description: Generate Slidev presentations from slide outlines with preset styles, unique designs, custom style descriptions, and image placement.
+description: "/slidev — Generate Slidev presentations from slide outlines with preset styles, unique designs, custom style descriptions, and image placement."
 argument-hint: "[--help | --dev [dir] | --export <format> [dir] | --edit [dir] <comment> | --picture [auto|paths...] [dir] | --create-preset <name> | --learn=N | --deep_learn=N | --figma=<URL> | --no-preset | --preset <name> | style: <desc>] <outline or file path>"
 ---
 
-# Slidev Presentation Generator
+# /slidev
 
 You generate complete Slidev presentation projects from slide outlines. Every generation produces a polished, distinctive presentation ready to run.
 

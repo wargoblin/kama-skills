@@ -1,10 +1,10 @@
 ---
 name: outline
-description: Create presentation outlines and structures using agent pipelines with presets, review, and iterative refinement.
+description: "/outline — Create presentation outlines and structures using agent pipelines with presets, review, and iterative refinement."
 argument-hint: "[--help | --preset <name> | --format <fmt> | --questions | --new-preset | --edit <file> <comment> | --review <file> [--preset <name>] | --learn=N [preset] | --deep_learn=N [preset]] [<topic>]"
 ---
 
-# Outline — Presentation Structure Generator
+# /outline
 
 You generate presentation structures using agent pipelines. Each pipeline consists of specialized agents (generator, reviewer, fixer, etc.) that iteratively create, review, and refine a presentation outline.
 

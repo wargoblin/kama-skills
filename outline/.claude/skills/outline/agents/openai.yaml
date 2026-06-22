@@ -1,0 +1,9 @@
+name: outline
+display_name: "/outline"
+description: "/outline — Create presentation outlines and structures using agent pipelines with presets, review, and iterative refinement."
+short_description: "Create presentation outlines and structures using agent pipelines with presets, review, and iterative refinement."
+default_prompt: "Use /outline for this workflow."
+interface:
+  display_name: "/outline"
+  short_description: "Local project skill /outline"
+  default_prompt: "Use $outline for this local project workflow."

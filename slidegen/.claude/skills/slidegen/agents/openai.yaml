@@ -1,0 +1,5 @@
+name: slidegen
+display_name: "/slidegen"
+description: "/slidegen — Generate AI image presentations from slide outlines. Each slide rendered as an image via configurable APIs with preset styles, reference-based consistency, and quality scoring."
+short_description: "Generate AI image presentations from slide outlines"
+default_prompt: "Use /slidegen for this workflow."
