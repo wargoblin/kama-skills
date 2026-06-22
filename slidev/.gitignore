@@ -7,3 +7,7 @@
 !.claude/**
 !README.md
 !README.ru.md
+!docs/
+!docs/**
+!.slidev-presets/
+!.slidev-presets/**

@@ -1,0 +1,22 @@
+archetype: figma-two-col-intro
+content_type: context
+figma_source:
+  nodeId: "1:107"
+  name: "Vision-Roadmap"
+
+slots:
+  title:
+    max_length: 40
+    overflow: shrink-font
+  description:
+    max_length: 250
+    overflow: wrap
+
+layout:
+  grid_columns: flexible
+  preserve:
+    - spacing-ratio
+    - font-size-hierarchy
+    - color-usage
+  flexible:
+    - text-length

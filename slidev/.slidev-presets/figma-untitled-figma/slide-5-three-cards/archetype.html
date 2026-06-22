@@ -1,0 +1,30 @@
+<!-- Figma archetype: figma-three-cards — Title+desc ABOVE cards, cards are gray placeholders -->
+<div style="position:absolute;inset:0;z-index:0;overflow:hidden;background:var(--bg-base);">
+</div>
+<div style="position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;padding:64px 80px 0;">
+  <div style="display:flex;gap:24px;flex:1;margin-bottom:24px;">
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:var(--color-text);margin-bottom:4px;">{{CARD_1_TITLE}}</div>
+      <div style="font-family:var(--font-body);font-size:1.25rem;color:var(--color-muted);margin-bottom:12px;">{{CARD_1_DESC}}</div>
+      <div class="card-solid" style="flex:1;min-height:200px;"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:var(--color-text);margin-bottom:4px;">{{CARD_2_TITLE}}</div>
+      <div style="font-family:var(--font-body);font-size:1.25rem;color:var(--color-muted);margin-bottom:12px;">{{CARD_2_DESC}}</div>
+      <div class="card-solid" style="flex:1;min-height:200px;"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:var(--color-text);margin-bottom:4px;">{{CARD_3_TITLE}}</div>
+      <div style="font-family:var(--font-body);font-size:1.25rem;color:var(--color-muted);margin-bottom:12px;">{{CARD_3_DESC}}</div>
+      <div class="card-solid" style="flex:1;min-height:200px;"></div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-icon"></div>
+    <span>{{BREADCRUMB}}</span>
+    <span>{{SUBTITLE}}</span>
+    <span>{{SECTION}}</span>
+    <span style="margin-left:auto;">{{PAGE_NUM}}</span>
+  </div>
+</div>
+<!-- NOTE: Titles and descriptions sit ABOVE the gray card area per Figma original. Cards are pure visual placeholders. -->

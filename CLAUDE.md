@@ -52,3 +52,12 @@ git commit -m "fix(slidev): description"
 - **Robust**: handles errors, validates inputs, has fallback strategies
 - Mark critical rules with `**CRITICAL**` or `MUST` — Claude respects emphasis hierarchy
 - Keep SKILL.md under ~4000 lines; split into references/ if larger
+
+## Autonomous Execution
+
+**CRITICAL:** When executing plans, DO NOT stop to ask for confirmation between steps.
+Execute all steps autonomously without interruption.
+If you encounter a blocker, attempt to resolve it yourself (2-3 attempts).
+Only stop if the blocker is truly unresolvable after multiple attempts.
+Do not ask "should I continue?" — just continue.
+Do not present options for the next step — pick the best one and execute.

@@ -30,25 +30,38 @@ With ONE big idea — a quote, a key number, a provocative question. Minimal tex
 - When in doubt: add `radial-gradient(ellipse 80% 80% at 50% 50%, <lifted-color> 0%, <base> 75%)` as the background. Even 8% opacity center brightening creates perceptible differentiation.
 - **Multiple section slides rule**: If a presentation has 2+ section slides, they MUST use different color temperatures from each other. Example: Section 01 = lifted navy (`#0e1624`), Section 02 = deeper teal (`#080e14`) — NOT both the same dark navy. The color temperature shift between section slides signals structural progression in the narrative.
 
-**CRITICAL — Mandatory per-slide background variation for dark themes**: When `colorSchema: dark`, EVERY slide MUST have a visually distinguishable background. Use this concrete recipe:
+### Background Level System
 
-```
-Given base background #0B0F1A (or similar dark):
+Every presentation defines exactly 3 background levels in `styles/index.css`:
 
-Slide type          | Background recipe                                           | Luminance delta
---------------------|-------------------------------------------------------------|----------------
-Cover               | base + radial-gradient(accent glow at center, 8% opacity)  | +3-5%
-Content (odd)       | base                                                       | 0% (anchor)
-Content (even)      | base + 3% luminance lift (#0E1320)                         | +3%
-Section divider     | base + 12% luminance lift (#151B2E) + centered glow        | +12%
-Stat/fact hero      | base + accent radial glow (10% opacity)                    | +5% perceptual
-Problem slides      | base (darkest)                                             | 0%
-Solution slides     | base + 5% lift                                             | +5%
-Ask/CTA             | warm hue shift (amber/gold gradient with base overlay 30%) | different hue
-Penultimate         | base + 8% lift (pre-CTA warmup)                            | +8%
-```
+| Variable | Usage | Coverage |
+|----------|-------|----------|
+| `--bg-base` | Primary background for content slides | ~60% of slides |
+| `--bg-alt` | Alternative background for section dividers, alternating content | ~30% of slides |
+| `--bg-accent` | Cover and CTA/closing slides | ~10% of slides |
 
-**Visual QA must verify**: export PNGs of consecutive slides, compare backgrounds. If two adjacent slides have visually identical backgrounds (same hex within ±3 luminance points), flag as CRITICAL and fix before proceeding.
+**Rules:**
+1. All three levels must share the **same color temperature** (all warm OR all cool — never mixed)
+2. Luminance delta between `--bg-base` and `--bg-accent`: maximum 40%
+3. Pure `#000000` and `#FFFFFF` are **banned** — always use tinted variants (e.g., `#FAF9F6`, `#1A2332`, `#0C0E14`)
+4. If `--bg-accent` luminance < 30% (dark) and `--bg-base` luminance > 70% (light), the **pre-CTA slide** (immediately before the CTA/closing slide) must use `--bg-alt` as a visual bridge
+
+**Slide-type to bg-level mapping:**
+
+| Slide type | Background level |
+|------------|-----------------|
+| Cover | `--bg-accent` |
+| Content (odd) | `--bg-base` |
+| Content (even) | `--bg-alt` |
+| Section divider | `--bg-alt` |
+| Stat/fact hero | `--bg-base` |
+| Problem/Solution | `--bg-base` or `--bg-alt` (alternating) |
+| Ask/CTA | `--bg-accent` |
+| Pre-CTA | `--bg-alt` (bridge) |
+
+Archetypes reference `var(--bg-base)` / `var(--bg-alt)` / `var(--bg-accent)` — no hardcoded background colors.
+
+**Visual QA must verify**: export PNGs of consecutive slides, compare backgrounds. If two adjacent slides have visually identical backgrounds (same hex within ±3 luminance points), flag as CRITICAL and fix before proceeding. Also verify: no pure #000/#FFF, consistent color temperature across all slides.
 
 **Anti-pattern**: 8 consecutive `default` layout slides with the same structure. Also: 12 slides with the exact same `background-color` hex value.
 
@@ -86,6 +99,10 @@ The "LABEL → H1 → content" three-layer pattern may appear on at most 3 conse
 
 **Anti-pattern**: Every slide following "LABEL top-left → accent line → 2-column grid".
 
+### Rule of Thirds
+
+On non-breathing, non-hero slides, place the dominant element at a thirds-grid intersection rather than dead center. Center alignment is reserved for breathing slides (stat-hero, quote-pull) and cover/CTA slides. At least 30% of content slides should use off-center focal points.
+
 ---
 
 ## Principle 3: Typographic Drama
@@ -93,18 +110,18 @@ The "LABEL → H1 → content" three-layer pattern may appear on at most 3 conse
 Typography creates visual hierarchy. Size contrast is the #1 tool for directing attention.
 
 **Rule**: Each presentation must use at least 3 distinct type scales:
-- **Hero scale** (4-8em): for key numbers, dramatic statements, slide titles on statement/fact slides
-- **Heading scale** (1.8-2.5em): for regular slide titles
-- **Body scale** (0.85-1.1em): for descriptions, bullets, labels
+- **Hero scale** (4-8rem): for key numbers, dramatic statements, slide titles on statement/fact slides
+- **Heading scale** (1.8-2.5rem): for regular slide titles
+- **Body scale** (1.0-1.25rem): for descriptions, bullets, labels
 
 **Implementation**:
 - Key metrics ($1.5M, 45 min, +20%) → hero scale, accent color, bold weight
-- On fact/statement slides, the main text should be 3-5em minimum
+- On fact/statement slides, the main text should be 3-5rem minimum
 - Never make everything the same size — if everything is emphasized, nothing is
 - Pair font weights dramatically: 700 heading next to 300 body text
-- Use the serif font from the pair for quotes and statements (creates texture variety)
+- Both heading and body fonts MUST be sans-serif. Contrast through character (geometric vs humanist, condensed vs proportional, angular vs rounded), not through serif/sans category split.
 
-**When a slide has 3-4 key metrics**: DON'T put them all in equal-sized cards at the same scale. Pick the MOST impactful metric and make it hero-sized (centered, 3-6em), then place the remaining metrics below in a row of smaller supporting cards. If ALL metrics are equally important, use a 2x2 grid with each number at 2.5-3em minimum — never smaller than the heading text.
+**When a slide has 3-4 key metrics**: DON'T put them all in equal-sized cards at the same scale. Pick the MOST impactful metric and make it hero-sized (centered, 3-6rem), then place the remaining metrics below in a row of smaller supporting cards. If ALL metrics are equally important, use a 2x2 grid with each number at 2.5-3rem minimum — never smaller than the heading text.
 
 **Non-duplication rule for consecutive slides:**
 If a fact/statement slide immediately follows a data/traction slide, the two slides MUST NOT feature the same headline metric. Either:
@@ -116,6 +133,24 @@ On a slide with a hero metric + supporting metrics:
 - Hero number: 3.5em+
 - Supporting numbers: 2.2em minimum (NEVER smaller than the slide heading)
 - Size ratio hero:supporting must be at least 1.6:1 to create clear hierarchy
+
+### Type Treatment Limit
+
+Maximum **3 visually distinct type treatments** per slide:
+1. Heading font (regular or bold) — titles, labels
+2. Body font (regular) — descriptions, bullets
+3. One accent treatment — bold OR italic OR uppercase, but **never all three simultaneously**
+
+FAIL if a single slide contains bold + italic + uppercase + multiple font families all at once ("font salad").
+
+### Italic Restriction
+
+Italic is permitted **only** in:
+- `<blockquote>` elements and direct quotations
+- Attribution lines ("— Author Name")
+- Image captions / footnotes
+
+Italic in headings, subheadings, or body text = **FAIL**.
 
 **Anti-pattern**: All headings at 1.8em, all body at 1em, across every slide. Or: 4 identical metric cards with numbers at 1.5em that are smaller than the heading.
 
@@ -269,6 +304,33 @@ defineProps({
 
 When the aesthetic calls for filled icons instead of outlined, adjust the component to use `fill` instead of `stroke`.
 
+### Icon Container Variation
+
+**CSS definitions** (include in `styles/index.css` for every deck):
+
+```css
+.icon-circle {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--color-accent-bg);
+  border: 1.5px solid var(--color-accent-dim);
+  display: flex; align-items: center; justify-content: center;
+}
+.icon-rounded {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: var(--color-accent-bg);
+  border: 1.5px solid var(--color-accent-dim);
+  display: flex; align-items: center; justify-content: center;
+}
+.icon-ghost {
+  display: inline-flex;
+  color: var(--color-accent);
+}
+```
+
+A deck MUST use at least 2 different icon container shapes. On a single slide (e.g., icon-trio), containers should be identical (Gestalt similarity). Between slides, containers must vary. The three available shapes are: icon-circle, icon-rounded, and icon-ghost.
+
 ---
 
 ## Principle 5: Card Variation
@@ -391,7 +453,38 @@ PASS minimums:
 
 **Background hue proximity rule**: When the decorative element color is within 60° hue distance of the background color, apply a 1.6× opacity multiplier above the stated minimum. When within 30° (same hue family, e.g., green decorations on green background), the minimum opacity for ANY decorative element is 0.18 regardless of other calculations. Warm ecru backgrounds with similarly-warm dots require at minimum 0.28 opacity at 1.5px to register as a pattern. For corner arc/glow elements: the arc center MUST be no more than `radius * 0.5` outside the slide boundary to guarantee at least 40% visibility.
 
+**Opacity calibration by background luminance:**
+- Light backgrounds (luminance > 70%): atmosphere 0.15-0.30, texture 0.06-0.12, borders 0.15-0.25
+- Dark backgrounds (luminance < 30%): atmosphere 0.08-0.15, texture 0.03-0.08, borders 0.10-0.18
+- Minimum decorative element size: 200px on any dimension. Elements < 200px are invisible at presentation scale.
+
+See `references/decoration-library.md` for the full library of pre-tested decoration components.
+
+**BACKGROUND LAYER SYSTEM**: Every slide must have minimum 2 background layers. A single solid color is not professional-grade. Layer atmosphere gradients and texture patterns on top of the base color. See Step 5 BACKGROUND LAYER SYSTEM for implementation details.
+
 **Anti-pattern**: Every slide is just text on a flat/gradient background with zero decorative elements. Or: decorative CSS at 0.03 opacity that is technically present but invisible to the human eye.
+
+### Pill/Badge Rendering
+
+All pill/badge/chip elements **must** use this CSS pattern:
+```css
+display: inline-flex;
+align-items: center;
+justify-content: center;
+line-height: 1;
+padding: 6px 18px;
+```
+
+`line-height: 1` is **CRITICAL** — without it, uppercase + letter-spacing text shifts visually upward.
+
+Pill background must be **opaque** (solid `var(--bg-base)` or `var(--bg-alt)`), not semi-transparent `rgba(...)`, to prevent "mud" effect when overlapping decorative gradient spots. **Alternative:** if a pill must be semi-transparent by design, radial-gradient spots must **not** be placed in the top 20% of the slide (where pills typically appear).
+
+### Decorative Gradient Exclusion Zones
+
+Decorative gradient spots (radial-gradient blobs, glows):
+- Must **not** overlap with text-heavy zones (headings, pills, body text)
+- Place in corners, edges, or outside the content area
+- If overlap with content is unavoidable: opacity ≤ 0.20
 
 ---
 
@@ -537,6 +630,17 @@ Charts and graphs should look like analytical dashboards, not colored divs.
 - Prohibited pairs: red+green, green+brown, blue+purple, green+black
 - Recommended binary pair: blue+orange
 - Never use color as ONLY differentiator — add shape, pattern, or text label
+- **Hue ranges:** Red (hue 0-30) + Green (hue 90-165) on same slide = **FAIL**. Brown (hue 20-40) + Green (hue 90-165) = **WARNING**.
+
+### Chart Type Selection Matrix
+
+| Goal | Correct type | Avoid |
+|------|-------------|-------|
+| Category comparison | Horizontal bar | 3D, exploded pie |
+| Change over time | Line chart | Bar with many periods |
+| Parts of whole | Stacked bar / Donut (≤5 segments) | Pie >6 segments |
+| Correlation | Scatter + trend line | Tables |
+| Simple proportion | Donut (3-5 segments) | 3D pie |
 
 ---
 
@@ -604,6 +708,19 @@ Complex diagrams (flywheels, flow charts, cycles) need proper vector graphics.
 **Flow chart pattern**: Use `<line>` or `<path>` with `marker-end` for proper arrowheads.
 
 **Anti-pattern**: Using `position: absolute` with text characters `→ ↓` as arrows.
+
+### Text Arrow Character Ban
+
+The following characters are **banned** in slides.md content (outside `<code>`, backticks, and `<!-- -->` speaker notes):
+
+`→` `←` `↑` `↓` `⟶` `➜` `▶`
+
+**Replacements:**
+- Sequences ("A → B → C"): rephrase textually ("from A to B, then to C") or use SVG `<path>` arrows
+- Pipelines: use `timeline-horizontal` / `timeline-zigzag` archetype with numbered steps
+- Navigation cues: use `Icon.vue` with `arrow-right` icon inside layout
+
+Any match in visible content = **FAIL** in QA-0c.
 
 ---
 
@@ -674,6 +791,14 @@ These colors are statistically the most common AI-default choices (Tailwind trai
 - Specific: `#6366F1`, `#8B5CF6`, `#A855F7`, `#06B6D4`
 - Acceptable as secondary/ambient (≤10% coverage), never as primary.
 
+**Pure Black/White Ban:**
+Never use pure `#000000` for text or pure `#FFFFFF` for backgrounds. Replace with tinted alternatives:
+- Black text → `#1A2332` (dark navy) or `#1C1917` (warm charcoal)
+- White background → `#FAF9F6` (cream), `#F5F5F3` (warm gray), or `#EFF5F4` (cool mint)
+
+**Weakest Segment First (Muted Text Contrast):**
+When defining `--color-muted` (secondary/gray text), test its contrast ratio against **every** surface it will appear on: `--bg-base`, `--bg-alt`, `--color-accent-bg`, `--color-surface`. The **lowest contrast ratio** must pass WCAG AA (≥ 4.5:1). If it fails on any surface (typically accent cards), darken `--color-muted` **globally** until the weakest segment passes. Do not vary muted color per surface — one muted color everywhere.
+
 ---
 
 ## Quick Reference: Principle Checklist
@@ -692,6 +817,23 @@ Use this checklist during generation, editing, and Visual QA:
 - [ ] **Diagrams**: Are diagrams SVG with proper arrows, not CSS+text?
 - [ ] **Spacing**: Is content vertically balanced, not crammed to top?
 - [ ] **Accent levels**: Is accent color used at 3 different intensities?
+- [ ] **Bg-system**: 3-level bg-system (bg-base/alt/accent), same temperature, no pure #000/#FFF?
+- [ ] **Type treatments**: ≤3 per slide; italic only in quotes/attribution?
+- [ ] **Icon containers**: Varied (size, shape, or style) when 3+ on one slide?
+- [ ] **Pills**: Opaque bg + line-height:1; no mud overlap with decorative gradients?
+- [ ] **Charts**: Type matches data goal (see matrix); colorblind-safe hue pairs?
+- [ ] **Arrow chars**: No text arrows (→←↑↓) in visible content?
+- [ ] **Muted text**: Passes WCAG 4.5:1 on ALL surfaces (weakest segment first)?
+
+---
+
+## Gestalt Compliance Notes
+
+**Proximity:** Labels and captions must be visually adjacent to their referent elements. A label more than ~1/4 slide height away from its element = violation.
+
+**Similarity:** Same-level elements in a grid (e.g., all cards in a card-mosaic) must share the same padding, border-radius, and font-size. Inconsistent styling within a group = violation.
+
+**Speaker Note Redundancy (Mayer Principle):** Speaker notes must EXTEND slide content, not repeat it verbatim. If slide text and speaker note convey the same information = redundancy violation.
 
 ---
 
@@ -713,5 +855,11 @@ What makes a presentation look AI-generated — avoid ALL of these:
 12. **Bar charts not starting at zero** — truncated Y-axis is a visual lie
 13. **Statistics without sources** — unsourced numbers signal hallucination
 14. **Sub-bullets 3+ levels deep** — max 2 levels, then restructure
+15. **Pure `#000000` or `#FFFFFF`** — always use tinted variants for text and backgrounds
+16. **Inconsistent background temperature** — mixing warm and cool backgrounds in the same deck
+17. **More than 3 background colors** — only `--bg-base`, `--bg-alt`, `--bg-accent` allowed
+18. **Text arrow characters** (→ ← ↑ ↓) in visible content — use SVG arrows or textual rephrasing
+19. **3+ identical icon containers** on one slide (same size, shape, border) — vary at least one dimension
+20. **Multiple decorative gradient types** (radial + linear as decoration) in same presentation — pick one
 
 **The test:** Would a professional presentation designer approve this slide? Would a McKinsey partner present it? If not — fix it.

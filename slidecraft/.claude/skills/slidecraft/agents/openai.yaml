@@ -1,0 +1,5 @@
+name: slidecraft
+display_name: "/slidecraft"
+description: "/slidecraft — Use when generating a two-layer presentation from a slide outline. Generates AI background images (text-free) via configurable APIs (Polza.ai default), then assembles a Slidev project with HTML/CSS text overlay. Supports preset styles, custom style descriptions, reference-based consistency, dual-layer QA scoring, and all management subcommands."
+short_description: "Use when generating a two-layer presentation from a slide outline"
+default_prompt: "Use /slidecraft for this workflow."

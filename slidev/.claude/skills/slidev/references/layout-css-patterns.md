@@ -177,3 +177,72 @@ When background images are used on cover/section slides, add this to `styles/ind
 1. Set `background-color: transparent !important` if using frontmatter `background:` prop
 2. Set `text-align: center` explicitly on `h1`, `p`, etc.
 3. Set text colors for readability against the dark overlay (white/near-white)
+
+---
+
+## Pill / Badge / Chip Pattern
+
+All pill-style elements (eyebrow labels, tags, category badges) must use:
+
+```css
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  /* Use opaque background — never rgba() over decorative gradients */
+  background: var(--bg-base);
+  border: 1.5px solid var(--color-accent-dim);
+  color: var(--color-accent);
+}
+```
+
+**Critical:** `line-height: 1` prevents vertical text shift with uppercase + letter-spacing. Opaque background prevents "mud" bleed-through from decorative gradient spots beneath.
+
+**Alternative:** If pill must be semi-transparent, ensure radial-gradient decorative spots are not placed in the top 20% of the slide (where pills typically appear).
+
+---
+
+## Icon Container Patterns
+
+Three icon container shapes. Use at least 2 per deck (see Principle 4).
+
+**Identifier mapping** (preset value → CSS class):
+
+| Preset value | CSS class | Use when |
+|-------------|-----------|----------|
+| `circle` | `.icon-circle` | stat-hero, cover-hero, single accent icons |
+| `rounded-square` | `.icon-rounded` | card-mosaic, comparison-table, bento-grid |
+| `ghost` | `.icon-ghost` | icon-trio, timeline, minimal slides |
+
+```css
+/* Circle */
+.icon-circle {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--color-accent-bg);
+  border: 1.5px solid var(--color-accent-dim);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Rounded square */
+.icon-rounded {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: var(--color-accent-bg);
+  border: 1.5px solid var(--color-accent-dim);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Ghost (no container) */
+.icon-ghost {
+  display: inline-flex;
+  color: var(--color-accent);
+}
+```

@@ -1,0 +1,30 @@
+archetype: figma-three-cards
+content_type: scope
+figma_source:
+  nodeId: "1:116"
+  name: "Three-Goals"
+
+slots:
+  cards:
+    count_in_figma: 3
+    min: 2
+    max: 4
+    scaling: grid-auto
+  card_title:
+    max_length: 30
+    overflow: shrink-font
+  card_desc:
+    max_length: 60
+    overflow: wrap
+
+layout:
+  grid_columns: flexible
+  preserve:
+    - spacing-ratio
+    - font-size-hierarchy
+    - color-usage
+    - border-radius
+  flexible:
+    - column-count
+    - card-count
+    - text-length

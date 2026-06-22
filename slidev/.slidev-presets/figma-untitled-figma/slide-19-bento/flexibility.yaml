@@ -1,0 +1,30 @@
+archetype: figma-bento
+content_type: metric
+figma_source:
+  nodeId: "1:312"
+  name: "Bento-Overview"
+
+slots:
+  modules:
+    count_in_figma: 5
+    min: 3
+    max: 6
+    scaling: grid-auto
+  description:
+    max_length: 200
+    overflow: wrap
+  metric:
+    max_length: 8
+    overflow: shrink-font
+
+layout:
+  grid_columns: flexible
+  preserve:
+    - spacing-ratio
+    - font-size-hierarchy
+    - color-usage
+    - border-radius
+  flexible:
+    - column-count
+    - card-count
+    - text-length

@@ -1,0 +1,5 @@
+name: game
+display_name: "/game"
+description: "/game — Game Coach — Gamified Goal Coaching"
+short_description: "Game Coach"
+default_prompt: "Use /game for this workflow."

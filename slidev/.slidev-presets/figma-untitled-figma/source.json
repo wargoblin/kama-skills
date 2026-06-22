@@ -1,0 +1,29 @@
+{
+  "fileKey": "wCyEkoqYCW1n8AqwECY5hn",
+  "sourceUrl": "https://www.figma.com/design/wCyEkoqYCW1n8AqwECY5hn/Untitled?node-id=0-1",
+  "extractedAt": "2026-03-30T12:00:00Z",
+  "figmaFrameWidth": 1920,
+  "figmaFrameHeight": 1080,
+  "slideNodes": [
+    {"index": 1, "nodeId": "1:40", "name": "Cover", "contentType": "intro"},
+    {"index": 2, "nodeId": "1:49", "name": "Agenda", "contentType": "context"},
+    {"index": 3, "nodeId": "1:96", "name": "Section-Goals", "contentType": "vision"},
+    {"index": 4, "nodeId": "1:107", "name": "Vision-Roadmap", "contentType": "context"},
+    {"index": 5, "nodeId": "1:116", "name": "Three-Goals", "contentType": "scope"},
+    {"index": 6, "nodeId": "1:135", "name": "Section-Strategy", "contentType": "vision"},
+    {"index": 7, "nodeId": "1:146", "name": "Research-Insights", "contentType": "context"},
+    {"index": 8, "nodeId": "1:157", "name": "Image-Text-Split", "contentType": "portfolio"},
+    {"index": 9, "nodeId": "1:168", "name": "How-Win", "contentType": "context"},
+    {"index": 10, "nodeId": "1:177", "name": "Text-ImageGrid", "contentType": "scope"},
+    {"index": 11, "nodeId": "1:190", "name": "Section-Design", "contentType": "vision"},
+    {"index": 12, "nodeId": "1:200", "name": "Phone-Mosaic", "contentType": "portfolio"},
+    {"index": 13, "nodeId": "1:240", "name": "Seamless-Signup", "contentType": "context"},
+    {"index": 14, "nodeId": "1:249", "name": "SSO-Integration", "contentType": "scope"},
+    {"index": 15, "nodeId": "1:262", "name": "Phone-Features", "contentType": "scope"},
+    {"index": 16, "nodeId": "1:284", "name": "Design-Quality", "contentType": "context"},
+    {"index": 17, "nodeId": "1:293", "name": "Password-Retrieval", "contentType": "portfolio"},
+    {"index": 18, "nodeId": "1:304", "name": "Full-Image", "contentType": "portfolio"},
+    {"index": 19, "nodeId": "1:312", "name": "Bento-Overview", "contentType": "metric"},
+    {"index": 20, "nodeId": "1:333", "name": "QA-End", "contentType": "cta"}
+  ]
+}

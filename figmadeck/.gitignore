@@ -1,0 +1,23 @@
+# Ignore all experiment files in this skill's test directory
+*
+
+# But keep these
+!.gitignore
+!.claude/
+!.claude/**
+!README.md
+!.slidev-presets/
+!.slidev-presets/**
+!edu_*/
+!edu_*/**
+edu_*/*/node_modules/
+edu_*/*/node_modules/**
+edu_*/*/.slidev/
+edu_*/*/.slidev/**
+edu_*/*/dist/
+edu_*/*/dist/**
+edu_*/*/slides-qa/
+edu_*/*/slides-qa/**
+edu_*/*/slides-tmp/
+edu_*/*/slides-tmp/**
+edu_*/*/package-lock.json

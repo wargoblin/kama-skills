@@ -1,0 +1,5 @@
+name: slidev
+display_name: "/slidev"
+description: "/slidev — Generate Slidev presentations from slide outlines with preset styles, unique designs, custom style descriptions, and image placement."
+short_description: "Generate Slidev presentations from slide outlines with preset styles, unique designs, custom style descriptions, and image placement."
+default_prompt: "Use /slidev for this workflow."

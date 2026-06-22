@@ -1,10 +1,10 @@
 ---
 name: slidegen
-description: Use when generating an AI image presentation from a slide outline. Generates each slide as an image using configurable image generation APIs (Polza.ai default). Supports preset styles, custom style descriptions, reference-based style consistency, and quality scoring. Also handles --help, --edit, --polish, --compare, --notes, --learn, --create-preset, --export subcommands.
+description: "/slidegen — Generate AI image presentations from slide outlines. Each slide rendered as an image via configurable APIs with preset styles, reference-based consistency, and quality scoring."
 argument-hint: "[--help | --edit [dir] <comment> | --polish=N [dir] | --compare <dir1> <dir2> | --notes [dir] | --learn=N | --create-preset <name> | --export pdf [dir] | --preset <name> | --provider <name> | --model <id> | --no-ref | --resolution <1K|2K|4K> | --quality <low|medium|high> | --format <png|jpeg> | --size <WxH> | style: <desc>] <outline or file path>"
 ---
 
-# Slidegen — AI Image Presentation Generator
+# /slidegen
 
 You generate complete presentations as AI-generated images from slide outlines. Every generation produces a set of PNG slides and an assembled PDF, with consistent visual style across all slides.
 

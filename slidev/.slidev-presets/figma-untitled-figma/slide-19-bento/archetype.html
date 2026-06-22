@@ -1,0 +1,39 @@
+<!-- Figma archetype: figma-bento — Bento grid with modules top row, text+metric bottom -->
+<div style="position:absolute;inset:0;z-index:0;overflow:hidden;background:var(--bg-base);">
+</div>
+<div style="position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;padding:32px 48px 0;gap:12px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;flex:1;">
+    <div class="card-solid" style="display:flex;flex-direction:column;padding:20px;">
+      <span style="font-family:var(--font-body);font-size:0.85rem;color:var(--color-text);text-align:center;margin-top:auto;">{{MODULE_1}}</span>
+    </div>
+    <div class="card-solid" style="display:flex;flex-direction:column;padding:20px;">
+      <span style="font-family:var(--font-body);font-size:0.85rem;color:var(--color-text);text-align:center;margin-top:auto;">{{MODULE_2}}</span>
+    </div>
+    <div class="card-solid" style="display:flex;flex-direction:column;padding:20px;">
+      <span style="font-family:var(--font-body);font-size:0.85rem;color:var(--color-text);text-align:center;margin-top:auto;">{{MODULE_3}}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card-solid" style="flex:1;display:flex;flex-direction:column;padding:20px;">
+        <span style="font-family:var(--font-body);font-size:0.85rem;color:var(--color-text);text-align:center;margin-top:auto;">{{MODULE_4}}</span>
+      </div>
+      <div class="card-solid" style="flex:1;display:flex;flex-direction:column;padding:20px;">
+        <span style="font-family:var(--font-body);font-size:0.85rem;color:var(--color-text);text-align:center;margin-top:auto;">{{MODULE_5}}</span>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:12px;flex:0.7;">
+    <div class="card-solid" style="padding:24px;display:flex;align-items:center;">
+      <p style="font-family:var(--font-body);font-size:1.25rem;color:var(--color-text);line-height:1.45;text-align:left;">{{DESCRIPTION}}</p>
+    </div>
+    <div class="card-solid" style="padding:24px;display:flex;align-items:center;justify-content:center;">
+      <span style="font-family:var(--font-heading);font-size:6rem;font-weight:800;color:var(--color-text);line-height:1;">{{METRIC}}</span>
+    </div>
+  </div>
+  <div class="slide-footer" style="position:relative;margin-top:auto;">
+    <div class="slide-footer-icon"></div>
+    <span>{{BREADCRUMB}}</span>
+    <span>{{SUBTITLE}}</span>
+    <span>{{SECTION}}</span>
+    <span style="margin-left:auto;">{{PAGE_NUM}}</span>
+  </div>
+</div>
